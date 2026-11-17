@@ -57,7 +57,7 @@
   - Hỗ trợ xây dựng kịch bản kiểm thử TDD tái hiện các điều kiện biên: Prompt injection (T09), Redaction kiểm tra rò rỉ PII/Canary secret (T10), Idempotency khi chạy lại (T11) và Crash Recovery tại 3 điểm ngắt (T12).
   - Thiết kế thực nghiệm ablation có kiểm soát (cô lập biến `draft`) cho Research Card R4 và cơ chế đối chiếu trực tiếp trên database độc lập.
 - **Cách tự kiểm tra và xác minh:**
-  - Áp dụng phương pháp TDD: Viết test trước trong `test_member2_single_and_crash.py`, chạy xác nhận các ca fail trên stub cũ, sau đó mới triển khai code trong `single.py` để đạt 20 test xanh.
+  - Áp dụng phương pháp TDD: Viết test trước trong `test_member2_single_and_crash.py`, chạy xác nhận các ca fail trên stub cũ, sau đó mới triển khai code trong `single.py` để đạt 24 test xanh.
   - Chạy đối chiếu ma trận công khai 14 claim x 5 seed (`62 passed` cho `single`), kiểm thử crash suite 20/20, và đối chiếu 70 cặp database độc lập giữa 2 nhánh baseline/treatment đảm bảo không có bất kỳ sai lệch nào về tiền hay audit.
 
 ## 6. Tự đánh giá
