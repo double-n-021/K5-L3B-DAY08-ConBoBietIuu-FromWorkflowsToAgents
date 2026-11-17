@@ -8,7 +8,7 @@ Tối đa 5 trang ngoài phụ lục. Số liệu lấy từ file trong `src/rep
 - Lớp: L3B
 - Repository nhóm: https://github.com/double-n-021/K5-L3B-DAY08-ConBoBietIuu-FromWorkflowsToAgents
 - Thành viên: xem [TEAM.md](../../TEAM.md) (Bùi Đặng Nhật Nguyên — `2A202603937`, Trần Gia Bảo — `2A202603914`, Trần Thị Hà Anh — `2A202603887`)
-- Commit chốt (trùng `report/team/decision_adr.md`): *(cập nhật ở CP5 sau khi gộp đủ 3 shape và chạy benchmark)*
+- Commit chốt (trùng `report/team/decision_adr.md`): *(cập nhật ở CP5 sau khi chạy benchmark 4 shapes)*
 
 ## 2. Mục tiêu và cách tiếp cận
 
@@ -30,12 +30,12 @@ Nhóm 3 thành viên chia mỗi người phụ trách độc lập 1 Shape và 1
 
 ### 3.1. Ranh giới giữa Code, Host và MockLLM
 Trong cả ba shape nhóm triển khai, ranh giới bảo mật và tài chính được giữ thống nhất:
-- **MockLLM (`src/lab8/mock_llm.py`)**: Chỉ dùng để soạn thảo câu chữ trả lời (`purpose="draft"`) hoặc chọn bước gọi công cụ đọc trong vòng lặp ReAct (`purpose="react"`). Model không bao giờ tự tính số tiền, không tạo approval và không được gọi trực tiếp công cụ ghi (`WRITE_TOOLS`).
+- **MockLLM (`src/lab8/mock_llm.py`)**: Chỉ dùng để soạn thảo câu chữ trả lời (`purpose="draft"`) hoặc chọn bước gọi công cụ đọc trong vòng lặp ReAct (`purpose="decide"`). Model không bao giờ tự tính số tiền, không tạo approval và không được gọi trực tiếp công cụ ghi (`WRITE_TOOLS`).
 - **Shape Code (`workflow.py`, `single.py`, `orchestrator.py`)**: Chỉ đọc dữ liệu qua các read-only tool đã lọc allowlist (`get_claim_view`, `lookup_order`), tính mức bồi thường bằng `compute_compensation` trên dòng `order` có cấu trúc (bỏ qua con số hoặc lệnh điều khiển trong văn bản `ticket`), truyền **quote đầy đủ (full quote)** và tham số `crash_at` vào `durability.issue_refund`, không bắt nuốt `InjectedCrash`, và đóng gói mọi nhánh trả về qua `lab8.shapes.common.finish()`.
 - **Host (`durability.py`, `policy.py`, `handoff.py`)**: Thực thi kiểm tra quyền sở hữu, kiểm tra approval gắn đúng `claim_id`, tự động trừ phần tiền các claim trước đã nhận trên cùng đơn hàng (`order_refunded_vnd`) bên trong transaction `BEGIN IMMEDIATE`, đảm bảo idempotency bằng khóa `refund:{claim_id}` và ghi audit `policy_denied` / `refund_committed`.
 
-### 3.2. Shape A — Workflow (`src/lab8/shapes/workflow.py`)
-Do Bùi Đặng Nhật Nguyên triển khai theo luồng tuần tự cố định:
+### 3.2. Shape A — Workflow (`src/lab8/shapes/workflow.py` — Bùi Đặng Nhật Nguyên, commit `f73d097`)
+Triển khai theo luồng tuần tự cố định:
 1. Mở kết nối SQLite trong khối `try ... finally: conn.close()` và đọc claim qua `get_claim_view(conn, claim_id)` (loại bỏ `parent_secret` và `raw_headers_json`). Nếu `not claim["found"]` thì trả `status="failed"` (`error_reason="unknown_claim"`).
 2. Nếu thiếu `order_id` (T04) -> trả sớm `status="needs_info"`, `proposal_amount=0`.
 3. Gọi `lookup_order(conn, claim["order_id"], claim["principal_id"])` (loại bỏ `phone`, `address`, `internal_note`, `item_name`). Nếu `not order_view["visible"]` (T05) -> trả `status="escalated"`, `proposal_amount=0`.
@@ -43,11 +43,20 @@ Do Bùi Đặng Nhật Nguyên triển khai theo luồng tuần tự cố địn
 5. Nếu `proposal > 0` -> gọi `issue_refund(conn, claim_id, proposal, crash_at=crash_at)` với full quote. Nếu gặp `InjectedCrash`, ghi sự kiện `crash` vào trace, gọi `trace.write()` rồi `raise` lại ngay. Nếu Host từ chối (`not outcome["ok"]`), trả `failed` khi `conflict=True` hoặc `denied` (với `proposal_amount=proposal` cho T07, T13). Nếu thành công, trả `resolved` (`proposal_amount=proposal` cho T01, T03, T08, T10, T11, T12, T14).
 6. **Trace events của `workflow`**: Chỉ ghi các sự kiện sạch gồm `claim_view` (`claim_id`, `principal_id`, `order_id`), `lookup_order`, `quote`, `decision` (và `error` / `crash` nếu có).
 
-### 3.3. Shape B — Single Agent / Bounded ReAct (`src/lab8/shapes/single.py`)
-*(Phần mô tả chi tiết của Trần Gia Bảo — cập nhật khi gộp nhánh `single.py`)*
+### 3.3. Shape B — Bounded Single ReAct Agent (`src/lab8/shapes/single.py` — Trần Gia Bảo, commit `b32666f`)
+1. **Kiến trúc & Ranh giới Quyền hạn (Model vs Code vs Host):**
+   - Shape B triển khai một Agent đơn lẻ hoạt động theo vòng lặp ReAct (`lab8.runtime.run_react`) với giới hạn cứng `max_steps=8` và cờ `worker=True`.
+   - Model chỉ được phép chọn các công cụ đọc (`lookup_order`, `compute_compensation`). Quyền ghi tiền (`issue_refund`) hoàn toàn nằm ở code của Shape bên ngoài vòng lặp ReAct và được kiểm soát chặt chẽ bởi Host.
+2. **Quy trình xử lý tuần tự trong ReAct (3 bước):**
+   - *Bước 1:* Gọi `lookup_order` với `principal_id` của claim. Nếu đơn hàng không hợp lệ hoặc không thuộc quyền sở hữu của khách hàng (`visible=False`), dừng vòng lặp và trả về trạng thái `escalated`.
+   - *Bước 2:* Dùng dữ liệu thật từ bảng `orders` để gọi `compute_compensation` tính toán số tiền bồi hoàn theo policy hiện hành. Không tin vào số ngày trễ hay điều khoản cũ ghi trong `ticket` của khách hàng.
+   - *Bước 3:* Nhận quote hoàn tiền và kết thúc vòng lặp ReAct (`done`).
+3. **Cơ chế Ghi tiền, Idempotency & Crash Recovery:**
+   - Nếu `proposal <= 0`: Trả về `denied`, tuyệt đối không gọi `issue_refund`.
+   - Nếu `proposal > 0`: Gọi `durability.issue_refund` với **full quote** và chuyển tiếp tham số `crash_at`. Khi xảy ra sự cố (`InjectedCrash` tại các điểm `before_effect`, `after_effect_before_checkpoint`, `after_checkpoint`), trace được flush và ngoại lệ được lan truyền ra ngoài không bị nuốt. Khi retry/resume, hệ thống tận dụng idempotency key `refund:{claim_id}` để đảm bảo đúng 1 dòng hoàn tiền.
+4. **Trace events của `single`**: Chỉ ghi nhận tóm tắt trạng thái sau khi đã sanitize (`claim`, `lookup_order`, `quote`, `decision`, `error` / `crash`), loại bỏ toàn bộ `ticket` thô, `parent_secret`, token Bearer và PII.
 
-### 3.4. Shape C — Orchestrator & Handoff Security (`src/lab8/shapes/orchestrator.py`)
-Do Trần Thị Hà Anh triển khai (commit `971feff`):
+### 3.4. Shape C — Orchestrator & Handoff Security (`src/lab8/shapes/orchestrator.py` — Trần Thị Hà Anh, commit `971feff`)
 1. Orchestrator đọc thông tin claim qua `get_claim_view` (không truy cập `parent_secret` hay `raw_headers_json`). Nếu `not claim["found"]` -> trả `failed` (`unknown_claim`); nếu thiếu `order_id` -> trả `needs_info`.
 2. Xây dựng gói dữ liệu chuyển giao `handoff.v1` bằng `lab8.handoff.make_handoff` với `facts={}` (không chuyển văn bản `ticket` của người dùng sang worker) và chỉ cấp danh sách công cụ đọc `INVESTIGATOR_TOOLS = ["lookup_order", "lookup_policy", "lookup_refund_history", "compute_compensation"]`.
 3. Ghi sự kiện `handoff` đã qua `safe_dump(handoff)` vào `Trace`, sau đó gọi `run_readonly_investigators(conn, budget, handoff, principal_id=claim["principal_id"])`.
@@ -57,7 +66,7 @@ Do Trần Thị Hà Anh triển khai (commit `971feff`):
 
 ## 4. Kết quả
 
-*(Cập nhật bảng số liệu từ `src/reports/benchmark.json` và `src/reports/crash.json` ở CP5)*
+*(Cập nhật bảng số liệu từ `src/reports/benchmark.json` ở CP5; kết quả Crash Suite tại `src/reports/crash.json` đạt `crash_safety = 20/20`)*
 
 Quyết định kiến trúc và lý do: xem [report/team/decision_adr.md](decision_adr.md). Phiếu nghiên cứu và ablation: xem [report/team/research_card.md](research_card.md).
 
@@ -80,11 +89,12 @@ Chi tiết đóng góp, mã commit và file kiểm thử của từng thành vi�
 ## 7. Hạn chế và hướng cải thiện
 
 - `MockLLM` chỉ sinh văn bản cố định theo băm `sha256(seed|purpose|prompt)` và chi phí token mô phỏng theo `src/config/pricing.yaml` (không phải hóa đơn API thực tế); độ trễ (`latency`) là `unavailable`.
-- *(Bổ sung thêm phân tích điều kiện đảo ngược quyết định kiến trúc sau khi có kết quả benchmark ở CP5)*.
+- *(Bổ sung thêm phân tích điều kiện đảo ngược quyết định kiến trúc sau khi có kết quả benchmark 4 shapes ở CP5)*.
 
 ## 8. Tài liệu tham khảo
 
 1. Tài liệu bài Lab 8 LogiX-VN: `docs/business_rules.md`, `docs/contracts.md`, `docs/architecture.md`, `docs/metrics.md`.
 2. Google Research (2026), *Towards a Science of Scaling Agent Systems*.
 3. Cemri et al. (NeurIPS 2025), *MAST: Why Do Multi-Agent LLM Systems Fail?*.
-4. DBOS, *Durable Workflows and Steps — Exactly-Once Execution with Database Transactions*.
+4. Zhang et al. (EMNLP 2026), *Rethinking Evaluation of MAS Efficiency*.
+5. DBOS, *Durable Workflows and Steps — Exactly-Once Execution with Database Transactions*.

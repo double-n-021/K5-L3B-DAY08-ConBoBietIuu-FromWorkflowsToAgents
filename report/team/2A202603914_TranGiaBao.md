@@ -14,45 +14,55 @@
 ## 2. Phần việc phụ trách
 
 - **Vai trò trong nhóm:** `single + durability/crash`
-- **Code chính:** Triển khai Shape B (`single` — Bounded ReAct Agent) tại [src/lab8/shapes/single.py](../../src/lab8/shapes/single.py) sử dụng vòng lặp `lab8.runtime.run_react` với giới hạn `max_steps=8`.
+- **Code chính:** Triển khai Shape B (`single` — Bounded ReAct Agent) tại [src/lab8/shapes/single.py](../../src/lab8/shapes/single.py) sử dụng vòng lặp `lab8.runtime.run_react` với giới hạn cứng `max_steps=8` và `worker=True`.
 - **Kiểm thử & Độ bền vững (Durability / Crash Suite):**
-  - Viết unit test riêng tại `src/tests/test_member2_single_and_crash.py` kiểm tra vòng lặp ReAct, khả năng chống prompt injection (T09), tính bất biến khi gọi lại (Idempotency — T11) và khả năng phục hồi sau sự cố (Crash Recovery — T12).
-  - Chạy bộ kiểm thử 20 điểm crash (`python -m lab8.crash_test --count 20 --out reports/crash.json`) đảm bảo đạt `20/20`.
-- **Nghiên cứu & Báo cáo nhóm:** Hoàn thiện phiếu nghiên cứu và thực nghiệm ablation tại [report/team/research_card.md](research_card.md); viết phần giải pháp Shape B (Single Agent) trong Mục 3 của [report/team/group_report.md](group_report.md).
+  - Viết bộ kiểm thử toàn diện tại `src/tests/test_member2_single_and_crash.py` (**24 test cases**) kiểm tra: Happy path C-001, các nhánh early return (unknown claim, missing order, principal scope), tính chống prompt injection (T09), làm sạch dữ liệu nhạy cảm / PII trong trace (T10), tính bất biến khi gọi lại (Idempotency — T11), phục hồi sau sự cố tại cả 3 điểm crash (T12), runtime thật dừng sau đúng 8 lượt khi liên tục chọn tool đọc, Single xử lý `step_cap` trả về `failed` và không gọi hoàn tiền, spy đối chiếu chính xác lời gọi model/tool với Budget, kiểm tra chặt chẽ giả thuyết delta model_calls = -1.0 bằng `math.isclose`, phát hiện sai lệch nội dung audit policy_denied, tính bất biến thứ tự hàng/key JSON của audit, cùng test phản ví dụ phát hiện sai lệch cho ablation.
+  - Chạy bộ kiểm thử crash tự động `python -m lab8.crash_test --count 20 --out reports/crash.json` đạt tuyệt đối `20/20`.
+- **Nghiên cứu & Báo cáo nhóm:**
+  - Hoàn thiện phiếu nghiên cứu R4 và thực nghiệm ablation (viết script `src/bonus/jay_ablation.py` sinh `src/reports/jay_ablation.json` với kiểm tra đối chiếu trực tiếp trên 70 cặp DB độc lập và chuẩn hóa audit) tại [report/team/research_card.md](research_card.md).
+  - Viết phần giải pháp Shape B (Single Agent) trong Mục 3 của [report/team/group_report.md](group_report.md).
 
 ## 3. Đóng góp cụ thể
 
-- **Commit chính (hash):** *(Điền mã commit hash sau khi push code `single.py`, `crash.json` và test)*
-- **Test đã thêm hoặc sửa:** `src/tests/test_member2_single_and_crash.py`
+- **Commit chính (hash):** `b32666f` (nhánh `feat/member2-single-react-crash`)
+- **Test đã thêm:** `src/tests/test_member2_single_and_crash.py` (24 unit/integration tests).
 - **Quyết định kỹ thuật đưa ra trong `single.py` và kiểm thử Crash:**
-  1. Thiết kế hàm `decide(observation)` chỉ được phép chọn các công cụ đọc (`READONLY_TOOLS`: `lookup_order`, `lookup_policy`, `compute_compensation`) với cờ `worker=True`, tuyệt đối không gọi `issue_refund` từ bên trong vòng lặp ReAct.
-  2. Do `run_react` ghi đè biến `seen` ở mỗi bước lặp, sử dụng biến trạng thái cục bộ để lưu kết quả `order_view` và `quote_payload`, đồng thời gọi `MockLLM` (`complete`) để ghi nhận đầy đủ `model_calls` vào `Budget`.
-  3. Không tin số ngày trễ hay mã điều khoản cũ (`SHIP-LATE-OLD`) viết trong `ticket`; chỉ kết luận dựa trên dữ liệu trả về từ `lookup_order` và `compute_compensation`.
-  4. Sau khi vòng lặp ReAct dừng, code của `single.py` truyền **full quote** và `crash_at` vào `durability.issue_refund`, không bắt nuốt `InjectedCrash` để đảm bảo khi resume sau crash (`after_effect_before_checkpoint`), hệ thống chỉ giữ đúng 1 dòng `refund_ledger` và 1 audit `refund_committed`.
+  1. Thiết lập hàm `decide(observation)` chỉ được phép chọn các công cụ đọc (`lookup_order`, `compute_compensation`) với cờ `worker=True`, tuyệt đối không gọi `issue_refund` từ bên trong vòng lặp ReAct.
+  2. Quản lý trạng thái cục bộ cho mỗi lần chạy để lưu `order_view` và `quote_payload`, gọi `MockLLM` (`complete`) ở mỗi bước để ghi nhận đầy đủ `model_calls` vào `Budget`.
+  3. Không tin vào số ngày trễ ghi trong `ticket` (như ca T02 ghi 5 ngày nhưng thực tế đơn trễ 2 ngày); luôn căn cứ theo dữ liệu trả về từ DB qua `lookup_order` và tính toán của `compute_compensation`.
+  4. Sau khi vòng lặp ReAct dừng, code của `single.py` truyền **full quote** và `crash_at` vào `durability.issue_refund`, để ngoại lệ `InjectedCrash` lan truyền tự nhiên (không nuốt lỗi). Đảm bảo khi resume sau sự cố (`before_effect`, `after_effect_before_checkpoint`, `after_checkpoint`), hệ thống duy trì đúng 1 dòng trong bảng `refund_ledger` và 1 bản ghi audit `refund_committed`.
+  5. Đảm bảo toàn bộ trace được làm sạch, không ghi lại ticket tự do của khách hàng, token canary, số điện thoại hay địa chỉ giao hàng.
 
 ## 4. Bằng chứng
 
 - **File cài đặt Shape B:** [src/lab8/shapes/single.py](../../src/lab8/shapes/single.py)
-- **File kiểm thử:** `src/tests/test_member2_single_and_crash.py`
+- **File kiểm thử cá nhân:** `src/tests/test_member2_single_and_crash.py` (24 passed)
 - **File báo cáo Crash Suite:** `src/reports/crash.json` (`"crash_safety": "20/20"`)
+- **File benchmark riêng Single:** `src/reports/jay_single_benchmark.json` (`pass_rate: 1.0`, `pass_5: 1.0`, `cost/success: 30.03 VND`)
+- **File kịch bản ablation & báo cáo:** `src/bonus/jay_ablation.py`, `src/reports/jay_ablation.json`
 - **File phiếu nghiên cứu:** [report/team/research_card.md](research_card.md)
-- **Lệnh kiểm chứng đã chạy (tại `src/`):**
-  - `python -m pytest -q -m student -o addopts= -k single` -> `62 passed`
-  - `python -m lab8.crash_test --count 20 --out reports/crash.json` -> `crash_safety 20/20`
-  - `python -m pytest -q tests/test_member2_single_and_crash.py` -> `passed`
-- **Run ID tiêu biểu:** `R-single-C-001-s11`, `R-single-C-012-s11`
+- **Lệnh kiểm chứng thực tế đã chạy thành công (tại `src/` dùng `.venv/bin/python`):**
+  - `.venv/bin/python -m pytest -q tests/test_member2_single_and_crash.py` -> **`24 passed`**
+  - `.venv/bin/python -m pytest -q tests/test_public_matrix.py -m student -o addopts= -k "single and not workflow and not orchestrator and not swarm"` -> **`62 passed`**
+  - `.venv/bin/python -m pytest -q` (Cổng host gate + test cá nhân) -> **`78 passed`**
+  - `.venv/bin/python -m lab8.crash_test --count 20 --out reports/crash.json` -> **`crash_safety 20/20`**
+  - `.venv/bin/python -m bonus.jay_ablation --out reports/jay_ablation.json` -> `STATUS: THANH_CONG, paired DB checks: PASS (0 mismatches), mean_model_calls delta: -1.0000, cost delta: -0.98 VND`
+- **Run ID tiêu biểu:** `R-single-C-001-s11`, `R-single-C-002-s55`, `R-single-C-011-s11`, `R-single-C-012-s11`, `R-single-C-014-s11`.
 
 ## 5. Công cụ AI đã dùng
 
-- **Công cụ sử dụng:** Trợ lý AI (Claude / Gemini / ChatGPT).
+- **Công cụ sử dụng:** Trợ lý AI Antigravity (Gemini).
 - **Mục đích sử dụng:**
-  - Tìm hiểu cơ chế hoạt động của `run_react` và `dispatch` trong `src/lab8/runtime.py`.
-  - Hỗ trợ phân tích cơ chế transaction và idempotency key `refund:{claim_id}` trong `src/lab8/durability.py` và rà soát khung nội dung `research_card.md`.
-- **Cách tự kiểm tra kết quả:**
-  - Chạy thực nghiệm phản ví dụ `python -m lab8.demo.buggy_workflow` để đối chiếu sự khác biệt giữa checkpoint đơn lẻ và ledger có khóa idempotency.
-  - Chạy toàn bộ 62 test của `single` trên 5 seed (`11, 22, 33, 44, 55`) và kiểm tra nội dung `src/reports/crash.json` đạt `20/20`.
+  - Phân tích luồng ReAct callback và cơ chế đóng kết nối SQLite an toàn trong `src/lab8/runtime.py`.
+  - Hỗ trợ xây dựng kịch bản kiểm thử TDD tái hiện các điều kiện biên: Prompt injection (T09), Redaction kiểm tra rò rỉ PII/Canary secret (T10), Idempotency khi chạy lại (T11) và Crash Recovery tại 3 điểm ngắt (T12).
+  - Thiết kế thực nghiệm ablation có kiểm soát (cô lập biến `draft`) cho Research Card R4 và cơ chế đối chiếu trực tiếp trên database độc lập.
+- **Cách tự kiểm tra và xác minh:**
+  - Áp dụng phương pháp TDD: Viết test trước trong `test_member2_single_and_crash.py`, chạy xác nhận các ca fail trên stub cũ, sau đó mới triển khai code trong `single.py` để đạt 24 test xanh.
+  - Chạy đối chiếu ma trận công khai 14 claim x 5 seed (`62 passed` cho `single`), kiểm thử crash suite 20/20, và đối chiếu 70 cặp database độc lập giữa 2 nhánh baseline/treatment đảm bảo không có bất kỳ sai lệch nào về tiền hay audit.
 
 ## 6. Tự đánh giá
 
-- **Mức độ hoàn thành:** Hoàn thành đầy đủ Shape B (`single.py`), bộ test riêng, báo cáo `crash.json` (`20/20`) và `research_card.md`.
-- **Bài học rút ra từ Lab 8:** Vòng lặp ReAct cho phép Agent linh hoạt chọn công cụ đọc theo ngữ cảnh, nhưng bắt buộc phải đặt giới hạn số bước (`max_steps=8`), tách quyền ghi tiền về phía Host và sử dụng idempotency key trong cùng transaction SQLite để chống chi trả trùng lặp khi crash.
+- **Mức độ hoàn thành:** Đã hoàn thành và xác minh đầy đủ các hạng mục được phân công cho thành viên Trần Gia Bảo theo đúng spec.
+- **Bài học rút ra từ Lab 8:**
+  - *Ranh giới an toàn:* Vòng lặp Agent chỉ nên có quyền thu thập dữ liệu và đề xuất phương án; mọi thao tác ghi dữ liệu, duyệt tiền và ràng buộc nghiệp vụ (capping, policy) bắt buộc phải do Host quản lý.
+  - *Idempotency & Durability:* Checkpoint đơn thuần không thể đảm bảo an toàn giao dịch; chỉ có giao dịch ACID trên DB kết hợp Idempotency Key (`refund:{claim_id}`) và bảng Audit Event mới ngăn chặn triệt để hiện tượng chi trả trùng lặp khi hệ thống bị crash giữa chừng.

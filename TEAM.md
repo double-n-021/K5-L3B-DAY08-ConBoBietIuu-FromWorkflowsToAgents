@@ -26,9 +26,15 @@ Gợi ý chia vai:
 
 | Người | Vai | Commit | Test đã thêm hoặc sửa |
 | --- | --- | --- | --- |
+<<<<<<< HEAD
+| Bùi Đặng Nhật Nguyên (`2A202603937`) | `workflow + integration` | (cập nhật ở CP5) | `src/tests/test_member1_workflow.py` |
+| Trần Gia Bảo (`2A202603914`) | `single + durability/crash` | `b32666f` | `src/tests/test_member2_single_and_crash.py` |
+| Trần Thị Hà Anh (`2A202603887`) | `orchestrator + handoff + benchmark/adr` | (cập nhật ở CP5) | `src/tests/test_member3_orchestrator_security.py` |
+=======
 | Bùi Đặng Nhật Nguyên (`2A202603937`) | `workflow + integration` | `f73d097` | `src/tests/test_member1_workflow.py` |
 | Trần Gia Bảo (`2A202603914`) | `single + durability/crash` | (cập nhật ở CP5) | `src/tests/test_member2_single_and_crash.py` |
 | Trần Thị Hà Anh (`2A202603887`) | `orchestrator + handoff + benchmark/adr` | `971feff` | `src/tests/test_member3_orchestrator_security.py` |
+>>>>>>> main
 
 ## Cá nhân
 
@@ -73,13 +79,18 @@ Sao chép mục dưới đây cho từng thành viên.
 
 ### Đóng góp cụ thể
 
-- (Cập nhật chi tiết sau khi hoàn thành CP2–CP5)
+- Triển khai hoàn chỉnh Shape B tại `src/lab8/shapes/single.py` (vòng lặp Bounded ReAct với `max_steps=8`, `worker=True`, model chỉ đọc qua `lookup_order` và `compute_compensation`, Host ghi tiền và kiểm tra duyệt qua `issue_refund`).
+- Viết file test toàn diện `src/tests/test_member2_single_and_crash.py` (24/24 test passed) bao gồm kiểm thử ReAct loop, 8-step cap runtime thật, spy budget đối chiếu chính xác, trace sạch, chống prompt injection, idempotency, crash recovery, kiểm tra delta model calls = -1.0 bằng math.isclose, chuẩn hóa và đối chiếu nội dung audit policy_denied, và test phản ví dụ cho ablation.
+- Chạy công cụ crash test sinh `src/reports/crash.json` đạt tuyệt đối `20/20`.
+- Chạy benchmark độc lập cho Single `src/reports/jay_single_benchmark.json` (70/70 trial pass, pass^5=1.0, cost/success=30.03 VND).
+- Xây dựng thực nghiệm ablation `src/bonus/jay_ablation.py` (với kiểm tra đối chiếu trực tiếp trên 70 cặp DB độc lập) sinh `src/reports/jay_ablation.json` và hoàn thiện phiếu nghiên cứu R4 tại `report/team/research_card.md`.
+- Viết phần giải pháp Shape B trong Mục 3 của `report/team/group_report.md` và hoàn thiện báo cáo cá nhân `report/team/2A202603914_TranGiaBao.md`.
 
 ### Bằng chứng
 
 - File code: `src/lab8/shapes/single.py`
-- File test: `src/tests/test_member2_single_and_crash.py`
-- Báo cáo sinh tự động: `src/reports/crash.json`
+- File test: `src/tests/test_member2_single_and_crash.py` (24 test passed)
+- Báo cáo sinh tự động: `src/reports/crash.json` (20/20), `src/reports/jay_single_benchmark.json`, `src/reports/jay_ablation.json`
 - Báo cáo nghiên cứu & cá nhân: `report/team/research_card.md`, `report/team/2A202603914_TranGiaBao.md`
 
 ## 2A202603887_TranThiHaAnh
