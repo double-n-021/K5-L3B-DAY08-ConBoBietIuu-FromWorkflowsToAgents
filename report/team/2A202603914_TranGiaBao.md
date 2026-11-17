@@ -24,7 +24,7 @@
 
 ## 3. Đóng góp cụ thể
 
-- **Commit chính (hash):** *(Các file đã hoàn thành và sẵn sàng commit: `src/lab8/shapes/single.py`, `src/tests/test_member2_single_and_crash.py`, `src/bonus/jay_ablation.py`, `src/reports/crash.json`, `src/reports/jay_single_benchmark.json`, `src/reports/jay_ablation.json` — sẽ cập nhật hash sau khi thực hiện git commit)*
+- **Commit chính (hash):** `b32666f` (nhánh `feat/member2-single-react-crash`)
 - **Test đã thêm:** `src/tests/test_member2_single_and_crash.py` (24 unit/integration tests).
 - **Quyết định kỹ thuật đưa ra trong `single.py` và kiểm thử Crash:**
   1. Thiết lập hàm `decide(observation)` chỉ được phép chọn các công cụ đọc (`lookup_order`, `compute_compensation`) với cờ `worker=True`, tuyệt đối không gọi `issue_refund` từ bên trong vòng lặp ReAct.

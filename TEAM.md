@@ -27,7 +27,7 @@ Gợi ý chia vai:
 | Người | Vai | Commit | Test đã thêm hoặc sửa |
 | --- | --- | --- | --- |
 | Bùi Đặng Nhật Nguyên (`2A202603937`) | `workflow + integration` | (cập nhật ở CP5) | `src/tests/test_member1_workflow.py` |
-| Trần Gia Bảo (`2A202603914`) | `single + durability/crash` | (cập nhật ở CP5) | `src/tests/test_member2_single_and_crash.py` |
+| Trần Gia Bảo (`2A202603914`) | `single + durability/crash` | `b32666f` | `src/tests/test_member2_single_and_crash.py` |
 | Trần Thị Hà Anh (`2A202603887`) | `orchestrator + handoff + benchmark/adr` | (cập nhật ở CP5) | `src/tests/test_member3_orchestrator_security.py` |
 
 ## Cá nhân
