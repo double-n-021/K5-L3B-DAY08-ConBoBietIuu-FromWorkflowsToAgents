@@ -13,7 +13,7 @@
 | --: | ------ | ---- | ----- | ------ | ------- |
 |   1 | Bùi Đặng Nhật Nguyên (Nhóm trưởng) | 2A202603937 | nhatnguyenmtvt@gmail.com | double-n-021 | workflow + integration |
 |   2 | Trần Gia Bảo | 2A202603914 | 26ai.baotg@vinuni.edu.vn | Jay-Gabriel | single + durability/crash |
-|   3 | Trần Thị Hà Anh | 2A202603887 | không công khai | hnha02 | orchestrator + handoff + benchmark/adr |
+|   3 | Trần Thị Hà Anh | 2A202603887 | tranthihaanh200204@gmail.com | hnha02 | orchestrator + handoff + benchmark/adr |
 
 Gợi ý chia vai:
 
