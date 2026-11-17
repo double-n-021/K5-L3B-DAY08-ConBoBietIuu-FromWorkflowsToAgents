@@ -52,9 +52,9 @@ Sao chép mục dưới đây cho từng thành viên.
 
 ### Đóng góp cụ thể
 
-- Triển khai hoàn chỉnh Shape A (`src/lab8/shapes/workflow.py`) xử lý quy trình hoàn phí cố định: đọc dữ liệu qua allowlist (`get_claim_view`, `lookup_order`), tính tiền bằng `compute_compensation`, truyền full quote và `crash_at` vào `durability.issue_refund`, đạt `62/62 passed` trên student matrix.
+- Triển khai hoàn chỉnh Shape A (`src/lab8/shapes/workflow.py`) xử lý quy trình hoàn phí cố định: đọc dữ liệu qua allowlist (`get_claim_view`, `lookup_order`), tính tiền bằng `compute_compensation`, truyền full quote và `crash_at` vào `durability.issue_refund`, đạt `62/62 passed` trên student matrix và `200/200` trace hợp lệ (`0` error, `0` leak suspect) trên bộ tự kiểm hidden (`src/reports/hidden_selfcheck.json`).
 - Viết bộ unit test `src/tests/test_member1_workflow.py` (`8 passed`) kiểm tra chống khai khống ngày trễ (T02 trên 5 seed), trần hoàn tiền theo đơn (T13, T14), bảo mật trace (T05, T10) và phục hồi sau crash (T12).
-- Thiết lập repository nhóm, quản lý merge PR của 3 thành viên, chạy chốt `src/reports/benchmark.json` (commit `11ad02b`) và hoàn thiện `decision_adr.md`, `group_report.md` đạt `0 FAIL` trên `check_submission`.
+- Thiết lập repository nhóm, quản lý merge PR của 3 thành viên, chạy chốt `src/reports/benchmark.json`, `src/reports/hidden_selfcheck.json` và hoàn thiện `decision_adr.md`, `group_report.md` đạt `0 FAIL` trên `check_submission`.
 
 ### Bằng chứng
 

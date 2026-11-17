@@ -44,9 +44,10 @@
 - **Lệnh kiểm chứng thực tế đã chạy thành công (tại `src/` dùng `.venv/bin/python`):**
   - `.venv/bin/python -m pytest -q tests/test_member2_single_and_crash.py` -> **`24 passed`**
   - `.venv/bin/python -m pytest -q tests/test_public_matrix.py -m student -o addopts= -k "single and not workflow and not orchestrator and not swarm"` -> **`62 passed`**
-  - `.venv/bin/python -m pytest -q` (Cổng host gate + test cá nhân) -> **`78 passed`**
+  - `.venv/bin/python -m pytest -q` (Cổng host gate + test cá nhân ở thời điểm nhánh riêng) -> **`78 passed`** (trên nhánh `main` hợp nhất đủ 3 thành viên đạt **`91 passed`**)
   - `.venv/bin/python -m lab8.crash_test --count 20 --out reports/crash.json` -> **`crash_safety 20/20`**
   - `.venv/bin/python -m bonus.jay_ablation --out reports/jay_ablation.json` -> `STATUS: THANH_CONG, paired DB checks: PASS (0 mismatches), mean_model_calls delta: -1.0000, cost delta: -0.98 VND`
+  - Tự kiểm hidden trên `main` (`src/reports/hidden_selfcheck.json`, 40 claims × 5 seeds): `single` đạt **`200/200` trace hợp lệ**, `0` error, `0` leak suspect (`6,247.90 VND`), đồng thuận 100% trạng thái với `workflow` và `orchestrator`.
 - **Run ID tiêu biểu:** `R-single-C-001-s11`, `R-single-C-002-s55`, `R-single-C-011-s11`, `R-single-C-012-s11`, `R-single-C-014-s11`.
 
 ## 5. Công cụ AI đã dùng

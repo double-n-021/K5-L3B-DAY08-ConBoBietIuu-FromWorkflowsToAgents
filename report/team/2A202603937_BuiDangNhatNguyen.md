@@ -34,10 +34,13 @@
 - **File kiểm thử:** `src/tests/test_member1_workflow.py`
 - **Lệnh kiểm chứng đã chạy (tại `src/`):**
   - `python -m pytest -q -m student -o addopts= -k workflow` -> `62 passed`
+  - `python -m pytest -q -m student -o addopts=` (toàn bộ 4 shape trên ma trận public) -> `248 passed`
   - `python -m pytest -q tests/test_member1_workflow.py` -> `8 passed`
-  - `python -m pytest -q` -> `91 passed`
+  - `python -m pytest -q` (Host gate + toàn bộ unit test nhóm) -> `91 passed`
+  - `python -m lab8.benchmark --shapes workflow,single,orchestrator --cases student_drop/hidden_claims.jsonl --world student_drop/hidden_world_state.json --out reports/hidden_selfcheck.json` -> `workflow`: `200/200` trace hợp lệ, `0` error, `0` leak suspect (`5,985.30 VND`), đồng thuận trạng thái 100% với `single` và `orchestrator`.
   - `python -m lab8.check_submission` -> `0 FAIL`
-- **Run ID tiêu biểu:** `R-workflow-C-001-s11`, `R-workflow-C-014-s11`
+- **File báo cáo tự kiểm hidden:** `src/reports/hidden_selfcheck.json`
+- **Run ID tiêu biểu:** `R-workflow-C-001-s11`, `R-workflow-C-014-s11`, `R-workflow-C-H01-s11`
 
 ## 5. Công cụ AI đã dùng
 
