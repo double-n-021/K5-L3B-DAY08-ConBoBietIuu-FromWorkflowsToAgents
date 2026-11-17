@@ -28,7 +28,7 @@ Gợi ý chia vai:
 | --- | --- | --- | --- |
 | Bùi Đặng Nhật Nguyên (`2A202603937`) | `workflow + integration` | `f73d097` | `src/tests/test_member1_workflow.py` |
 | Trần Gia Bảo (`2A202603914`) | `single + durability/crash` | (cập nhật ở CP5) | `src/tests/test_member2_single_and_crash.py` |
-| Trần Thị Hà Anh (`2A202603887`) | `orchestrator + handoff + benchmark/adr` | (cập nhật ở CP5) | `src/tests/test_member3_orchestrator_security.py` |
+| Trần Thị Hà Anh (`2A202603887`) | `orchestrator + handoff + benchmark/adr` | `971feff` | `src/tests/test_member3_orchestrator_security.py` |
 
 ## Cá nhân
 
@@ -92,10 +92,12 @@ Sao chép mục dưới đây cho từng thành viên.
 
 ### Đóng góp cụ thể
 
-- (Cập nhật chi tiết sau khi hoàn thành CP2–CP5)
+- Triển khai hoàn chỉnh Shape C (`src/lab8/shapes/orchestrator.py`): đọc claim qua `get_claim_view`, tạo gói chuyển giao `handoff.v1` đã lọc allowlist (`make_handoff`) chỉ cấp `READONLY_TOOLS` (`lookup_order`, `lookup_policy`, `lookup_refund_history`, `compute_compensation`), chạy `run_readonly_investigators` và giữ quyền gọi `durability.issue_refund` với full quote tại tầng Orchestrator, đạt `62/62 passed` trên student matrix.
+- Viết bộ unit test bảo mật `src/tests/test_member3_orchestrator_security.py` kiểm tra `Trace contract v1`, chống rò rỉ `CANARY_SECRET_*` và PII ở T05/T10, kiểm tra allowlist của `handoff.v1` và tính idempotent khi chạy lại.
 
 ### Bằng chứng
 
+- Commit chính: `971feff` (`feat(orchestrator): implement orchestrator shape and security tests`), `492587b` (`docs(team): fill member 3 email in TEAM.md`)
 - File code: `src/lab8/shapes/orchestrator.py`
 - File test: `src/tests/test_member3_orchestrator_security.py`
 - Báo cáo sinh tự động: `src/reports/benchmark.json`

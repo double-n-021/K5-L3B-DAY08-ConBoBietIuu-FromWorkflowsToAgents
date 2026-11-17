@@ -8,7 +8,7 @@
 
 - Họ tên: Trần Thị Hà Anh
 - MSSV: 2A202603887
-- Email: không công khai
+- Email: tranthihaanh200204@gmail.com
 - GitHub: hnha02
 
 ## 2. Phần việc phụ trách
@@ -22,7 +22,7 @@
 
 ## 3. Đóng góp cụ thể
 
-- **Commit chính (hash):** *(Điền mã commit hash sau khi push code `orchestrator.py`, `benchmark.json`, `decision_adr.md` và test)*
+- **Commit chính (hash):** `971feff` (`feat(orchestrator): implement orchestrator shape and security tests`), `492587b` (`docs(team): fill member 3 email in TEAM.md`)
 - **Test đã thêm hoặc sửa:** `src/tests/test_member3_orchestrator_security.py`
 - **Quyết định kỹ thuật đưa ra trong `orchestrator.py` và ADR:**
   1. Sử dụng `lab8.handoff.make_handoff` để lọc các trường được phép (`ALLOWED_FIELDS`, `FACT_KEYS`) và chỉ cấp quyền `READONLY_TOOLS` (`lookup_order`, `lookup_policy`, `lookup_refund_history`, `compute_compensation`) cho Investigator; tuyệt đối không truyền `parent_secret` hay `raw_headers`.

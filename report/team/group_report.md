@@ -47,7 +47,13 @@ Do Bùi Đặng Nhật Nguyên triển khai theo luồng tuần tự cố địn
 *(Phần mô tả chi tiết của Trần Gia Bảo — cập nhật khi gộp nhánh `single.py`)*
 
 ### 3.4. Shape C — Orchestrator & Handoff Security (`src/lab8/shapes/orchestrator.py`)
-*(Phần mô tả chi tiết của Trần Thị Hà Anh — cập nhật khi gộp nhánh `orchestrator.py`)*
+Do Trần Thị Hà Anh triển khai (commit `971feff`):
+1. Orchestrator đọc thông tin claim qua `get_claim_view` (không truy cập `parent_secret` hay `raw_headers_json`). Nếu `not claim["found"]` -> trả `failed` (`unknown_claim`); nếu thiếu `order_id` -> trả `needs_info`.
+2. Xây dựng gói dữ liệu chuyển giao `handoff.v1` bằng `lab8.handoff.make_handoff` với `facts={}` (không chuyển văn bản `ticket` của người dùng sang worker) và chỉ cấp danh sách công cụ đọc `INVESTIGATOR_TOOLS = ["lookup_order", "lookup_policy", "lookup_refund_history", "compute_compensation"]`.
+3. Ghi sự kiện `handoff` đã qua `safe_dump(handoff)` vào `Trace`, sau đó gọi `run_readonly_investigators(conn, budget, handoff, principal_id=claim["principal_id"])`.
+4. Kiểm tra kết quả từ Investigator: nếu `not order_view.get("visible")` -> trả `escalated` (`proposal_amount=0`). Lấy `proposal` từ `compute_compensation`, nếu `proposal <= 0` -> trả `denied` (`proposal_amount=0`).
+5. Khi `proposal > 0`, chính Orchestrator (không phải Investigator) gọi `durability.issue_refund(conn, claim_id, proposal, crash_at=crash_at)` với **full quote**, bắt riêng `InjectedCrash` để flush `trace.write()` rồi `raise` lại ngay, và đóng gói mọi nhánh trả về qua `finish()`.
+6. **Trace events của `orchestrator`**: Ghi các sự kiện đã lọc allowlist gồm `claim`, `handoff`, `investigator` (`lookup_order`, `refund_history`), `quote`, `host`, `decision` (và `crash` nếu có).
 
 ## 4. Kết quả
 
