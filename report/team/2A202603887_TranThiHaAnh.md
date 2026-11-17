@@ -33,13 +33,13 @@
 ## 4. Bằng chứng
 
 - **File cài đặt Shape C:** [src/lab8/shapes/orchestrator.py](../../src/lab8/shapes/orchestrator.py)
-- **File kiểm thử:** `src/tests/test_member3_orchestrator_security.py`
-- **File báo cáo Benchmark:** `src/reports/benchmark.json`
+- **File kiểm thử:** `src/tests/test_member3_orchestrator_security.py` (`5 passed`)
+- **File báo cáo Benchmark:** `src/reports/benchmark.json` (`orchestrator`: `pass_rate = 1.000`, `pass^5 = 1.000`, `variance = 0.000000`, `cost/success = 56.52 VND`, `mean_steps = 5.36`)
 - **File quyết định kiến trúc (ADR):** [report/team/decision_adr.md](decision_adr.md)
 - **Lệnh kiểm chứng đã chạy (tại `src/`):**
   - `python -m pytest -q -m student -o addopts= -k orchestrator` -> `62 passed`
   - `python -m lab8.benchmark --shapes workflow,single,orchestrator,swarm --cases data/public_claims.jsonl --seeds 11,22,33,44,55 --out reports/benchmark.json`
-  - `python -m pytest -q tests/test_member3_orchestrator_security.py` -> `passed`
+  - `python -m pytest -q tests/test_member3_orchestrator_security.py` -> `5 passed`
 - **Run ID tiêu biểu:** `R-orchestrator-C-005-s11`, `R-orchestrator-C-010-s11`
 
 ## 5. Công cụ AI đã dùng

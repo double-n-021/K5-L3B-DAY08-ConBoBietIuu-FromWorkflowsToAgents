@@ -109,5 +109,5 @@ Chi tiết đóng góp, mã commit và file kiểm thử của từng thành vi�
 1. Tài liệu bài Lab 8 LogiX-VN: `docs/business_rules.md`, `docs/contracts.md`, `docs/architecture.md`, `docs/metrics.md`.
 2. Google Research (2026), *Towards a Science of Scaling Agent Systems*.
 3. Cemri et al. (NeurIPS 2025), *MAST: Why Do Multi-Agent LLM Systems Fail?*.
-4. Zhang et al. (EMNLP 2026), *Rethinking Evaluation of MAS Efficiency*.
+4. Zhang et al. (EMNLP 2026), *Rethinking the Evaluation of Efficiency Methods for Multi-Agent Systems*, https://aclanthology.org/2026.emnlp-main.798/.
 5. DBOS, *Durable Workflows and Steps — Exactly-Once Execution with Database Transactions*.
