@@ -5,7 +5,7 @@
 - Tên nhóm: ConBoBietIuu
 - Lớp: L3B
 - Repo nhóm: `K5-L3B-DAY08-ConBoBietIuu-FromWorkflowsToAgents` (xem [SUBMISSION.md](SUBMISSION.md))
-- URL repo, nhánh nộp, commit chốt: https://github.com/double-n-021/K5-L3B-DAY08-ConBoBietIuu-FromWorkflowsToAgents, `main`, (điền ở CP5)
+- URL repo, nhánh nộp, commit chốt: https://github.com/double-n-021/K5-L3B-DAY08-ConBoBietIuu-FromWorkflowsToAgents, `main`, `11ad02b`
 
 ## Thành viên
 
@@ -26,15 +26,9 @@ Gợi ý chia vai:
 
 | Người | Vai | Commit | Test đã thêm hoặc sửa |
 | --- | --- | --- | --- |
-<<<<<<< HEAD
-| Bùi Đặng Nhật Nguyên (`2A202603937`) | `workflow + integration` | (cập nhật ở CP5) | `src/tests/test_member1_workflow.py` |
-| Trần Gia Bảo (`2A202603914`) | `single + durability/crash` | `b32666f` | `src/tests/test_member2_single_and_crash.py` |
-| Trần Thị Hà Anh (`2A202603887`) | `orchestrator + handoff + benchmark/adr` | (cập nhật ở CP5) | `src/tests/test_member3_orchestrator_security.py` |
-=======
 | Bùi Đặng Nhật Nguyên (`2A202603937`) | `workflow + integration` | `f73d097` | `src/tests/test_member1_workflow.py` |
-| Trần Gia Bảo (`2A202603914`) | `single + durability/crash` | (cập nhật ở CP5) | `src/tests/test_member2_single_and_crash.py` |
+| Trần Gia Bảo (`2A202603914`) | `single + durability/crash` | `b32666f` | `src/tests/test_member2_single_and_crash.py` |
 | Trần Thị Hà Anh (`2A202603887`) | `orchestrator + handoff + benchmark/adr` | `971feff` | `src/tests/test_member3_orchestrator_security.py` |
->>>>>>> main
 
 ## Cá nhân
 
@@ -88,6 +82,7 @@ Sao chép mục dưới đây cho từng thành viên.
 
 ### Bằng chứng
 
+- Commit chính: `b32666f` (`feat(single): implement Shape B bounded ReAct agent, crash suite and ablation`), `a883b34`
 - File code: `src/lab8/shapes/single.py`
 - File test: `src/tests/test_member2_single_and_crash.py` (24 test passed)
 - Báo cáo sinh tự động: `src/reports/crash.json` (20/20), `src/reports/jay_single_benchmark.json`, `src/reports/jay_ablation.json`

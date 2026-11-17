@@ -8,7 +8,7 @@ Tối đa 5 trang ngoài phụ lục. Số liệu lấy từ file trong `src/rep
 - Lớp: L3B
 - Repository nhóm: https://github.com/double-n-021/K5-L3B-DAY08-ConBoBietIuu-FromWorkflowsToAgents
 - Thành viên: xem [TEAM.md](../../TEAM.md) (Bùi Đặng Nhật Nguyên — `2A202603937`, Trần Gia Bảo — `2A202603914`, Trần Thị Hà Anh — `2A202603887`)
-- Commit chốt (trùng `report/team/decision_adr.md`): *(cập nhật ở CP5 sau khi chạy benchmark 4 shapes)*
+- Commit chốt (trùng `report/team/decision_adr.md`): `11ad02b`
 
 ## 2. Mục tiêu và cách tiếp cận
 
@@ -66,9 +66,22 @@ Triển khai theo luồng tuần tự cố định:
 
 ## 4. Kết quả
 
-*(Cập nhật bảng số liệu từ `src/reports/benchmark.json` ở CP5; kết quả Crash Suite tại `src/reports/crash.json` đạt `crash_safety = 20/20`)*
+### 4.1. Bảng so sánh 4 Shape trên bộ Public (`src/reports/benchmark.json`)
+Điều kiện thực nghiệm cố định: 14 claim public (`C-001` đến `C-014`) x 5 seed (`11, 22, 33, 44, 55`) = 70 trials/shape, `as_of = 2026-11-15`, bảng giá mô phỏng `config/pricing.yaml` (`input: 20 VND/1k`, `output: 80 VND/1k`, `tool: 10 VND/call`), mỗi trial chạy trên một cơ sở dữ liệu SQLite mới hoàn toàn (`fresh_sqlite_per_trial`).
 
-Quyết định kiến trúc và lý do: xem [report/team/decision_adr.md](decision_adr.md). Phiếu nghiên cứu và ablation: xem [report/team/research_card.md](research_card.md).
+| Shape | Trials (Pass/Total) | Pass Rate | Pass^5 | Seed Min – Max | Seed Variance | Cost / Success (VND, mô phỏng) | Total Cost (VND) | Mean / p95 Steps | Mean Model / Tool Calls |
+| --- | :---: | ---: | ---: | :---: | ---: | ---: | ---: | :---: | :---: |
+| **`workflow` (Chọn)** | 70 / 70 | **1.000** | **1.000** | 1.000 – 1.000 | **0.000000** | **28.79** | 2015.00 | 3.79 / 4.0 | 1.00 / 2.79 |
+| `single` | 70 / 70 | **1.000** | **1.000** | 1.000 – 1.000 | **0.000000** | 30.03 | 2102.00 | 3.79 / 4.0 | 3.71 / 2.79 |
+| `orchestrator` | 70 / 70 | **1.000** | **1.000** | 1.000 – 1.000 | **0.000000** | 56.52 | 3956.10 | 5.36 / 6.0 | 0.86 / 5.57 |
+| `swarm` (Đối chứng) | 69 / 70 | 0.986 | 0.929 | 0.929 – 1.000 | 0.000816 | 49.57 | 3420.12 | 2.80 / 3.0 | 3.00 / 4.66 |
+
+### 4.2. Độ an toàn Crash Recovery & Bảo mật (`src/reports/crash.json` & Test Matrix)
+- **Crash Safety (`src/reports/crash.json`):** Đạt **20/20** (`CR-01` đến `CR-20`: 5 kịch bản `before_effect`, 7 kịch bản `after_effect_before_checkpoint`, 5 kịch bản `after_checkpoint`, 1 kịch bản `amount_conflict_on_retry`, 1 kịch bản `retry_without_approval`, 1 kịch bản `swarm_after_effect_before_checkpoint`).
+- **Ma trận kiểm thử (`pytest`):**
+  - Cổng Host + Unit Tests của 3 thành viên (`python -m pytest -q`): **91 passed, 0 failed**.
+  - Ma trận Student trên cả 4 shape (`python -m pytest -q -m student -o addopts=`): **248 passed, 0 failed**.
+- **Quyết định kiến trúc:** Nhóm chọn **`workflow`** vì đạt đồng thời `pass_rate = 1.000`, `pass^5 = 1.000`, `seed_variance = 0.000000` với chi phí thấp nhất (**28.79 VND/success**). Phân tích chi tiết nằm tại [report/team/decision_adr.md](decision_adr.md) và kết quả nghiên cứu ablation R4 nằm tại [report/team/research_card.md](research_card.md).
 
 ## 5. Khó khăn và cách xử lý
 
@@ -82,14 +95,14 @@ Quyết định kiến trúc và lý do: xem [report/team/decision_adr.md](decis
 ## 6. Tổng hợp đóng góp
 
 Chi tiết đóng góp, mã commit và file kiểm thử của từng thành viên được khai báo đầy đủ trong [TEAM.md](../../TEAM.md) (bảng `## Bảng đóng góp`) và 3 báo cáo cá nhân:
-- [report/team/2A202603937_BuiDangNhatNguyen.md](2A202603937_BuiDangNhatNguyen.md)
-- [report/team/2A202603914_TranGiaBao.md](2A202603914_TranGiaBao.md)
-- [report/team/2A202603887_TranThiHaAnh.md](2A202603887_TranThiHaAnh.md)
+- [report/team/2A202603937_BuiDangNhatNguyen.md](2A202603937_BuiDangNhatNguyen.md) (Commit `f73d097`, 8 tests trong `test_member1_workflow.py`)
+- [report/team/2A202603914_TranGiaBao.md](2A202603914_TranGiaBao.md) (Commit `b32666f`, 24 tests trong `test_member2_single_and_crash.py`)
+- [report/team/2A202603887_TranThiHaAnh.md](2A202603887_TranThiHaAnh.md) (Commit `971feff`, 5 tests trong `test_member3_orchestrator_security.py`)
 
 ## 7. Hạn chế và hướng cải thiện
 
-- `MockLLM` chỉ sinh văn bản cố định theo băm `sha256(seed|purpose|prompt)` và chi phí token mô phỏng theo `src/config/pricing.yaml` (không phải hóa đơn API thực tế); độ trễ (`latency`) là `unavailable`.
-- *(Bổ sung thêm phân tích điều kiện đảo ngược quyết định kiến trúc sau khi có kết quả benchmark 4 shapes ở CP5)*.
+- **Giới hạn của MockLLM và Chi phí mô phỏng:** `MockLLM` chỉ sinh chuỗi cố định theo băm `sha256(seed|purpose|prompt)` và tính giá giả lập theo `src/config/pricing.yaml` (không phải hóa đơn API thực tế); độ trễ (`latency`) là `unavailable`.
+- **Điều kiện làm kết luận thay đổi:** Trong bài toán hiện tại, dữ liệu đơn hàng đã được chuẩn hóa trong bảng `orders` nên `workflow` đạt hiệu quả tối ưu. Nếu mở rộng sang bài toán mà quy trình thu thập bằng chứng phụ thuộc động vào nội dung sự cố phức tạp (cần tra cứu linh hoạt nhiều hệ thống), `single` (Bounded ReAct) sẽ phù hợp hơn; hoặc nếu cần cô lập vùng bảo mật cứng giữa tiến trình điều phối và các tác nhân bên thứ ba, `orchestrator` kèm `handoff.v1` sẽ phát huy tác dụng.
 
 ## 8. Tài liệu tham khảo
 
