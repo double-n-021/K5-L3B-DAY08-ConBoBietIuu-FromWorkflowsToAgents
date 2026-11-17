@@ -4,12 +4,12 @@
 `Shape chọn` phải là đúng một trong: `workflow`, `single`, `orchestrator`, `swarm`. Đây là shape được chấm cổng hidden.
 
 - Shape chọn: workflow
-- Commit hash: 11ad02b
+- Commit hash: 0cd1f4c
 - Run id dẫn chứng: R-workflow-C-001-s11, R-workflow-C-002-s55, R-workflow-C-014-s11, R-swarm-C-002-s55 (src/reports/benchmark.json)
 - Pass rate / pass^5 / seed min-max / variance: pass_rate=1.000 (70/70) / pass^5=1.000 (14/14) / seed min-max=1.000-1.000 / variance=0.000000
 - Cost per success (mô phỏng, VND): 28.79 VND (total 2015.00 VND / 70 successes; single=30.03 VND, orchestrator=56.52 VND, swarm=49.57 VND)
 - Crash safety: 20/20 (src/reports/crash.json)
-- Secret leak / approval bypass: secret_leak=0 / pii_leak=0 / approval_bypass=0 (0/70 trials trên cả 3 shape workflow, single, orchestrator)
+- Secret leak / approval bypass: secret_leak=0 / pii_leak=0 / approval_bypass=0 (0/70 public trials trên cả 3 shape workflow, single, orchestrator)
 
 Ví dụ một dòng đã điền: `- Shape chọn: workflow`, `- Crash safety: 20/20 (src/reports/crash.json)`.
 
@@ -44,4 +44,4 @@ Trong bài toán xử lý claim hoàn phí của LogiX-VN hiện tại, **không
 
 - **MockLLM và Chi phí mô phỏng:** Toàn bộ lời gọi model trong Lab sử dụng `MockLLM` (`src/lab8/mock_llm.py`) sinh kết quả tất định theo băm `sha256(seed|purpose|prompt)`. Chi phí `cost_per_success_vnd` được tính từ bảng giá giả lập trong `src/config/pricing.yaml` (`20 VND/1k input tokens`, `80 VND/1k output tokens`, `10 VND/tool call`), không phải hóa đơn API thương mại.
 - **Độ trễ (`latency`):** Được ghi nhận là `unavailable` vì `MockLLM` chạy nội bộ trong bộ nhớ và không phản ánh độ trễ mạng hay thời gian suy luận thực tế của LLM sản xuất.
-- **Quy mô dữ liệu:** Kết quả benchmark public dựa trên 14 kịch bản chuẩn hóa (T01–T14) x 5 seed = 70 trials cho mỗi kiến trúc; trên môi trường sản xuất thật với ngôn ngữ tự nhiên đa dạng, bước trích xuất thực thể ở đầu vào có thể phát sinh phương sai lớn hơn.
+- **Quy mô dữ liệu và Tự kiểm Hidden (`src/reports/hidden_selfcheck.json`):** Kết quả đo pass rate ở trên dựa trên 14 public claims x 5 seed = 70 trials/shape. Trên bộ tự kiểm hidden không nhãn `student_drop/` (40 claims `C-H01`..`C-H40` x 5 seed = 200 trials/shape), cả 3 shape (`workflow`, `single`, `orchestrator`) đều đạt `200/200` trace hợp lệ, `error_trials = 0`, `leak_suspect_trials = 0`, đồng thuận `status` 100% ở 200 cặp `(claim_id, seed)` (`resolved: 90, denied: 95, escalated: 10, needs_info: 5`), trong đó `workflow` tiếp tục có tổng chi phí mô phỏng thấp nhất (`5,985.30 VND` so với `single = 6,247.90 VND` và `orchestrator = 11,822.70 VND`). Do `student_drop/` không chứa nhãn đáp án, `pass_rate` hidden chính thức do grader của giảng viên xác định khi chấm.

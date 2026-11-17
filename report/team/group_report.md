@@ -8,7 +8,7 @@ Tối đa 5 trang ngoài phụ lục. Số liệu lấy từ file trong `src/rep
 - Lớp: L3B
 - Repository nhóm: https://github.com/double-n-021/K5-L3B-DAY08-ConBoBietIuu-FromWorkflowsToAgents
 - Thành viên: xem [TEAM.md](../../TEAM.md) (Bùi Đặng Nhật Nguyên — `2A202603937`, Trần Gia Bảo — `2A202603914`, Trần Thị Hà Anh — `2A202603887`)
-- Commit chốt (trùng `report/team/decision_adr.md`): `11ad02b`
+- Commit chốt (trùng `report/team/decision_adr.md`): `0cd1f4c`
 
 ## 2. Mục tiêu và cách tiếp cận
 
@@ -83,6 +83,17 @@ Triển khai theo luồng tuần tự cố định:
   - Ma trận Student trên cả 4 shape (`python -m pytest -q -m student -o addopts=`): **248 passed, 0 failed**.
 - **Quyết định kiến trúc:** Nhóm chọn **`workflow`** vì đạt đồng thời `pass_rate = 1.000`, `pass^5 = 1.000`, `seed_variance = 0.000000` với chi phí thấp nhất (**28.79 VND/success**). Phân tích chi tiết nằm tại [report/team/decision_adr.md](decision_adr.md) và kết quả nghiên cứu ablation R4 nằm tại [report/team/research_card.md](research_card.md).
 
+### 4.3. Tự kiểm trên bộ Hidden (`src/reports/hidden_selfcheck.json`)
+Chạy tự kiểm trên bộ `student_drop/` do lab coach phát (40 claim không nhãn `C-H01` đến `C-H40` x 5 seed `11, 22, 33, 44, 55` = **200 trials/shape**, không có đáp án nên chỉ kiểm tra runtime, Trace Contract v1 và dấu hiệu rò rỉ):
+
+| Shape | Trials | Trace hợp lệ (`unlabeled`) | `error_trials` | `leak_suspect_trials` | Phân bố `status` (200 trials) | Total Cost (VND, mô phỏng) | Mean / p95 Steps |
+| --- | :---: | :---: | :---: | :---: | --- | ---: | :---: |
+| **`workflow` (Chọn)** | 200 | 200 / 200 | **0** | **0** | `denied: 95`, `resolved: 90`, `escalated: 10`, `needs_info: 5` | **5,985.30** | 3.90 / 4.0 |
+| `single` | 200 | 200 / 200 | **0** | **0** | `denied: 95`, `resolved: 90`, `escalated: 10`, `needs_info: 5` | 6,247.90 | 3.90 / 4.0 |
+| `orchestrator` | 200 | 200 / 200 | **0** | **0** | `denied: 95`, `resolved: 90`, `escalated: 10`, `needs_info: 5` | 11,822.70 | 5.50 / 6.0 |
+
+Cả ba shape (`workflow`, `single`, `orchestrator`) **đồng thuận 100%** về `status` trên toàn bộ 200 cặp `(claim_id, seed)` (`0` điểm sai khác), `0` lỗi runtime và `0` nghi ngờ rò rỉ secret; `workflow` tiếp tục giữ mức chi phí mô phỏng thấp nhất.
+
 ## 5. Khó khăn và cách xử lý
 
 1. **Rủi ro trừ kép trần hoàn tiền theo đơn ở T14 (`C-014`, đơn `O-515`)**:
@@ -109,5 +120,5 @@ Chi tiết đóng góp, mã commit và file kiểm thử của từng thành vi�
 1. Tài liệu bài Lab 8 LogiX-VN: `docs/business_rules.md`, `docs/contracts.md`, `docs/architecture.md`, `docs/metrics.md`.
 2. Google Research (2026), *Towards a Science of Scaling Agent Systems*.
 3. Cemri et al. (NeurIPS 2025), *MAST: Why Do Multi-Agent LLM Systems Fail?*.
-4. Zhang et al. (EMNLP 2026), *Rethinking Evaluation of MAS Efficiency*.
+4. Zhang et al. (EMNLP 2026), *Rethinking the Evaluation of Efficiency Methods for Multi-Agent Systems*, https://aclanthology.org/2026.emnlp-main.798/.
 5. DBOS, *Durable Workflows and Steps — Exactly-Once Execution with Database Transactions*.

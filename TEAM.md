@@ -5,7 +5,7 @@
 - Tên nhóm: ConBoBietIuu
 - Lớp: L3B
 - Repo nhóm: `K5-L3B-DAY08-ConBoBietIuu-FromWorkflowsToAgents` (xem [SUBMISSION.md](SUBMISSION.md))
-- URL repo, nhánh nộp, commit chốt: https://github.com/double-n-021/K5-L3B-DAY08-ConBoBietIuu-FromWorkflowsToAgents, `main`, `11ad02b`
+- URL repo, nhánh nộp, commit chốt: https://github.com/double-n-021/K5-L3B-DAY08-ConBoBietIuu-FromWorkflowsToAgents, `main`, `0cd1f4c`
 
 ## Thành viên
 
@@ -46,21 +46,21 @@ Sao chép mục dưới đây cho từng thành viên.
 
 ### Phần việc phụ trách
 
-- Nhóm trưởng, quản lý tích hợp Git, kiểm soát chất lượng bài nộp (`check_submission`).
+- Nhóm trưởng, quản lý tích hợp Git, giải quyết xung đột khi merge PR và kiểm soát chất lượng bài nộp (`check_submission`).
 - Triển khai Shape A (`src/lab8/shapes/workflow.py`) và bộ kiểm thử `src/tests/test_member1_workflow.py`.
-- Tổng hợp `TEAM.md` và `report/team/group_report.md` (Mục 1, 2, phần Shape A trong Mục 3, Mục 5, 6).
+- Tổng hợp `TEAM.md`, `report/team/group_report.md` (Mục 1–8), phối hợp chạy benchmark 4 shapes (`src/reports/benchmark.json`) và chốt `report/team/decision_adr.md`.
 
 ### Đóng góp cụ thể
 
-- Triển khai hoàn chỉnh Shape A (`src/lab8/shapes/workflow.py`) xử lý quy trình hoàn phí cố định: đọc dữ liệu qua allowlist (`get_claim_view`, `lookup_order`), tính tiền bằng `compute_compensation`, truyền full quote và `crash_at` vào `durability.issue_refund`, đạt `62/62 passed` trên student matrix.
-- Viết bộ unit test `src/tests/test_member1_workflow.py` kiểm tra chống khai khống ngày trễ (T02 trên 5 seed), trần hoàn tiền theo đơn (T13, T14), bảo mật trace (T05, T10) và phục hồi sau crash (T12).
-- Thiết lập repository nhóm, bảng phân công `TEAM.md` và khung báo cáo nhóm.
+- Triển khai hoàn chỉnh Shape A (`src/lab8/shapes/workflow.py`) xử lý quy trình hoàn phí cố định: đọc dữ liệu qua allowlist (`get_claim_view`, `lookup_order`), tính tiền bằng `compute_compensation`, truyền full quote và `crash_at` vào `durability.issue_refund`, đạt `62/62 passed` trên student matrix và `200/200` trace hợp lệ (`0` error, `0` leak suspect) trên bộ tự kiểm hidden (`src/reports/hidden_selfcheck.json`).
+- Viết bộ unit test `src/tests/test_member1_workflow.py` (`8 passed`) kiểm tra chống khai khống ngày trễ (T02 trên 5 seed), trần hoàn tiền theo đơn (T13, T14), bảo mật trace (T05, T10) và phục hồi sau crash (T12).
+- Thiết lập repository nhóm, quản lý merge PR của 3 thành viên, chạy chốt `src/reports/benchmark.json`, `src/reports/hidden_selfcheck.json` và hoàn thiện `decision_adr.md`, `group_report.md` đạt `0 FAIL` trên `check_submission`.
 
 ### Bằng chứng
 
-- Commit chính: `f73d097` (`feat(workflow): implement deterministic workflow shape and unit tests`)
+- Commit chính: `f73d097` (`feat(workflow): implement deterministic workflow shape and unit tests`), `11ad02b` (`feat(cp5): generate 4-shape public benchmark report and resolve TEAM.md table`)
 - File code: `src/lab8/shapes/workflow.py`
-- File test: `src/tests/test_member1_workflow.py`
+- File test: `src/tests/test_member1_workflow.py` (`8 passed`)
 - Báo cáo cá nhân: `report/team/2A202603937_BuiDangNhatNguyen.md`
 
 ## 2A202603914_TranGiaBao
@@ -99,12 +99,13 @@ Sao chép mục dưới đây cho từng thành viên.
 ### Đóng góp cụ thể
 
 - Triển khai hoàn chỉnh Shape C (`src/lab8/shapes/orchestrator.py`): đọc claim qua `get_claim_view`, tạo gói chuyển giao `handoff.v1` đã lọc allowlist (`make_handoff`) chỉ cấp `READONLY_TOOLS` (`lookup_order`, `lookup_policy`, `lookup_refund_history`, `compute_compensation`), chạy `run_readonly_investigators` và giữ quyền gọi `durability.issue_refund` với full quote tại tầng Orchestrator, đạt `62/62 passed` trên student matrix.
-- Viết bộ unit test bảo mật `src/tests/test_member3_orchestrator_security.py` kiểm tra `Trace contract v1`, chống rò rỉ `CANARY_SECRET_*` và PII ở T05/T10, kiểm tra allowlist của `handoff.v1` và tính idempotent khi chạy lại.
+- Viết bộ unit test bảo mật `src/tests/test_member3_orchestrator_security.py` (`5 passed`) kiểm tra `Trace contract v1`, chống rò rỉ `CANARY_SECRET_*` và PII ở T05/T10, kiểm tra allowlist của `handoff.v1` và tính idempotent khi chạy lại.
+- Đối chiếu kết quả thực nghiệm của Shape C trên `src/reports/benchmark.json` (`pass_rate = 1.000`, `pass^5 = 1.000`, `variance = 0.000000`, `cost/success = 56.52 VND`, `mean_steps = 5.36`) để cùng nhóm chốt chọn `workflow` trong `report/team/decision_adr.md`.
 
 ### Bằng chứng
 
 - Commit chính: `971feff` (`feat(orchestrator): implement orchestrator shape and security tests`), `492587b` (`docs(team): fill member 3 email in TEAM.md`)
 - File code: `src/lab8/shapes/orchestrator.py`
-- File test: `src/tests/test_member3_orchestrator_security.py`
+- File test: `src/tests/test_member3_orchestrator_security.py` (`5 passed`)
 - Báo cáo sinh tự động: `src/reports/benchmark.json`
 - Báo cáo quyết định kiến trúc & cá nhân: `report/team/decision_adr.md`, `report/team/2A202603887_TranThiHaAnh.md`

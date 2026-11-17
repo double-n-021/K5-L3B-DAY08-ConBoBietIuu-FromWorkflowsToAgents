@@ -20,8 +20,8 @@
 
 ## 3. Đóng góp cụ thể
 
-- **Commit chính (hash):** `f73d097` (`feat(workflow): implement deterministic workflow shape and unit tests`)
-- **Test đã thêm hoặc sửa:** `src/tests/test_member1_workflow.py`
+- **Commit chính (hash):** `f73d097` (`feat(workflow): implement deterministic workflow shape and unit tests`), `11ad02b` (chốt `src/reports/benchmark.json` ở CP5)
+- **Test đã thêm hoặc sửa:** `src/tests/test_member1_workflow.py` (`8 passed`)
 - **Quyết định kỹ thuật đưa ra trong `workflow.py`:**
   1. Đọc thông tin claim qua `get_claim_view` và đơn hàng qua `lookup_order` (không dùng `SELECT *`) để ngăn rò rỉ `parent_secret` (`CANARY_SECRET_*`), header và PII (`phone`, `address`, `internal_note`, `item_name`) vào trace.
   2. Tính số tiền bồi thường hoàn toàn bằng code xác định (`compute_compensation`) dựa trên dữ liệu có cấu trúc của đơn hàng và policy hiện hành (`is_current = 1`, `effective_date <= 2026-11-15`), bỏ qua các con số hoặc lệnh điều khiển trong văn bản `ticket`.
@@ -34,9 +34,13 @@
 - **File kiểm thử:** `src/tests/test_member1_workflow.py`
 - **Lệnh kiểm chứng đã chạy (tại `src/`):**
   - `python -m pytest -q -m student -o addopts= -k workflow` -> `62 passed`
-  - `python -m pytest -q tests/test_member1_workflow.py` -> `passed`
+  - `python -m pytest -q -m student -o addopts=` (toàn bộ 4 shape trên ma trận public) -> `248 passed`
+  - `python -m pytest -q tests/test_member1_workflow.py` -> `8 passed`
+  - `python -m pytest -q` (Host gate + toàn bộ unit test nhóm) -> `91 passed`
+  - `python -m lab8.benchmark --shapes workflow,single,orchestrator --cases student_drop/hidden_claims.jsonl --world student_drop/hidden_world_state.json --out reports/hidden_selfcheck.json` -> `workflow`: `200/200` trace hợp lệ, `0` error, `0` leak suspect (`5,985.30 VND`), đồng thuận trạng thái 100% với `single` và `orchestrator`.
   - `python -m lab8.check_submission` -> `0 FAIL`
-- **Run ID tiêu biểu:** `R-workflow-C-001-s11`, `R-workflow-C-014-s11`
+- **File báo cáo tự kiểm hidden:** `src/reports/hidden_selfcheck.json`
+- **Run ID tiêu biểu:** `R-workflow-C-001-s11`, `R-workflow-C-014-s11`, `R-workflow-C-H01-s11`
 
 ## 5. Công cụ AI đã dùng
 
