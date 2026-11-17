@@ -15,32 +15,13 @@
 |   2 | Trần Gia Bảo | 2A202603914 | 26ai.baotg@vinuni.edu.vn | Jay-Gabriel | single + durability/crash |
 |   3 | Trần Thị Hà Anh | 2A202603887 | tranthihaanh200204@gmail.com | hnha02 | orchestrator + handoff + benchmark/adr |
 
-Gợi ý chia vai:
-
-- Nhóm 6 người: integration; workflow; single agent; orchestrator; ledger/policy/crash; eval/report.
-- Nhóm 4 người: workflow + integration; single; orchestrator + handoff; ledger + evaluation.
-
 ## Bảng đóng góp
-
-`python -m lab8.check_submission` đọc bảng này bằng máy: giữ nguyên tiêu đề `## Bảng đóng góp` và các cột. Mỗi người một dòng: commit có nội dung và ít nhất một test đã thêm hoặc sửa.
 
 | Người | Vai | Commit | Test đã thêm hoặc sửa |
 | --- | --- | --- | --- |
 | Bùi Đặng Nhật Nguyên (`2A202603937`) | `workflow + integration` | `f73d097` | `src/tests/test_member1_workflow.py` |
 | Trần Gia Bảo (`2A202603914`) | `single + durability/crash` | `b32666f` | `src/tests/test_member2_single_and_crash.py` |
 | Trần Thị Hà Anh (`2A202603887`) | `orchestrator + handoff + benchmark/adr` | `971feff` | `src/tests/test_member3_orchestrator_security.py` |
-
-## Cá nhân
-
-Mỗi thành viên đồng thời tạo một báo cáo riêng trong `report/` theo dạng:
-
-```text
-report/team/MSSV_HoTen.md
-```
-
-Ví dụ: `report/team/20241234_NguyenVanAn.md`.
-
-Sao chép mục dưới đây cho từng thành viên.
 
 ## 2A202603937_BuiDangNhatNguyen
 
@@ -98,14 +79,14 @@ Sao chép mục dưới đây cho từng thành viên.
 
 ### Đóng góp cụ thể
 
-- Triển khai hoàn chỉnh Shape C (`src/lab8/shapes/orchestrator.py`): đọc claim qua `get_claim_view`, tạo gói chuyển giao `handoff.v1` đã lọc allowlist (`make_handoff`) chỉ cấp `READONLY_TOOLS` (`lookup_order`, `lookup_policy`, `lookup_refund_history`, `compute_compensation`), chạy `run_readonly_investigators` và giữ quyền gọi `durability.issue_refund` với full quote tại tầng Orchestrator, đạt `62/62 passed` trên student matrix.
+- Triển khai hoàn chỉnh Shape C (`src/lab8/shapes/orchestrator.py`): đọc claim qua `get_claim_view`, tạo gói chuyển giao `handoff.v1` đã lọc allowlist (`make_handoff`) chỉ cấp `READONLY_TOOLS` (`lookup_order`, `lookup_policy`, `lookup_refund_history`, `compute_compensation`), chạy `run_readonly_investigators` và giữ quyền gọi `durability.issue_refund` với full quote tại tầng Orchestrator, đạt `62/62 passed` trên student matrix và `200/200` trace hợp lệ (`0` error, `0` leak suspect) trên bộ tự kiểm hidden (`src/reports/hidden_selfcheck.json`).
 - Viết bộ unit test bảo mật `src/tests/test_member3_orchestrator_security.py` (`5 passed`) kiểm tra `Trace contract v1`, chống rò rỉ `CANARY_SECRET_*` và PII ở T05/T10, kiểm tra allowlist của `handoff.v1` và tính idempotent khi chạy lại.
 - Đối chiếu kết quả thực nghiệm của Shape C trên `src/reports/benchmark.json` (`pass_rate = 1.000`, `pass^5 = 1.000`, `variance = 0.000000`, `cost/success = 56.52 VND`, `mean_steps = 5.36`) để cùng nhóm chốt chọn `workflow` trong `report/team/decision_adr.md`.
 
 ### Bằng chứng
 
-- Commit chính: `971feff` (`feat(orchestrator): implement orchestrator shape and security tests`), `492587b` (`docs(team): fill member 3 email in TEAM.md`)
+- Commit chính: `971feff` (`feat(orchestrator): implement orchestrator shape and security tests`), `492587b` (`docs(team): fill member 3 email in TEAM.md`), `7334443`
 - File code: `src/lab8/shapes/orchestrator.py`
 - File test: `src/tests/test_member3_orchestrator_security.py` (`5 passed`)
-- Báo cáo sinh tự động: `src/reports/benchmark.json`
+- Báo cáo sinh tự động: `src/reports/benchmark.json`, `src/reports/hidden_selfcheck.json`
 - Báo cáo quyết định kiến trúc & cá nhân: `report/team/decision_adr.md`, `report/team/2A202603887_TranThiHaAnh.md`

@@ -1,8 +1,5 @@
 # Decision record
 
-Điền sau dấu `:` trên cùng dòng, không xóa nhãn. Giảng viên và `python -m lab8.check_submission` (chạy trong `src/`) đọc các dòng này bằng máy. Không đổi tên hay dời file này khỏi `report/team/`.
-`Shape chọn` phải là đúng một trong: `workflow`, `single`, `orchestrator`, `swarm`. Đây là shape được chấm cổng hidden.
-
 - Shape chọn: workflow
 - Commit hash: 0cd1f4c
 - Run id dẫn chứng: R-workflow-C-001-s11, R-workflow-C-002-s55, R-workflow-C-014-s11, R-swarm-C-002-s55 (src/reports/benchmark.json)
@@ -10,8 +7,6 @@
 - Cost per success (mô phỏng, VND): 28.79 VND (total 2015.00 VND / 70 successes; single=30.03 VND, orchestrator=56.52 VND, swarm=49.57 VND)
 - Crash safety: 20/20 (src/reports/crash.json)
 - Secret leak / approval bypass: secret_leak=0 / pii_leak=0 / approval_bypass=0 (0/70 public trials trên cả 3 shape workflow, single, orchestrator)
-
-Ví dụ một dòng đã điền: `- Shape chọn: workflow`, `- Crash safety: 20/20 (src/reports/crash.json)`.
 
 ## Vì sao shape này
 

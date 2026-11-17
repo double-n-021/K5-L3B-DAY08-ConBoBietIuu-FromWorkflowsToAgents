@@ -60,13 +60,13 @@
 | **`orchestrator`** | **1.000** | **1.000** | **0.000000** | **56.52** | **5.36** | **5.57** |
 | `swarm` (Đối chứng) | 0.986 | 0.929 | 0.000816 | 49.57 | 2.80 | 4.66 |
 
-- **Các lệnh kiểm chứng thực tế đã chạy thành công (tại `src/` sử dụng `.venv/bin/python`):**
-  - `.venv/bin/python -m pytest -q tests/test_member3_orchestrator_security.py` -> **`5 passed in 0.03s`**
-  - `.venv/bin/python -m pytest -q tests/test_public_matrix.py -m student -o addopts= -k orchestrator` -> **`62 passed in 0.18s`**
-  - `.venv/bin/python -m pytest -q` (Toàn bộ test suite cổng Host + Unit Tests cả 3 thành viên) -> **`91 passed in 1.05s`**
-  - `.venv/bin/python -m lab8.benchmark --shapes workflow,single,orchestrator,swarm --cases data/public_claims.jsonl --seeds 11,22,33,44,55 --out reports/benchmark.json` -> **`280 trials completed`**
+- **Các lệnh kiểm chứng thực tế đã chạy thành công (tại `src/`):**
+  - `python -m pytest -q tests/test_member3_orchestrator_security.py` -> **`5 passed`**
+  - `python -m pytest -q tests/test_public_matrix.py -m student -o addopts= -k orchestrator` -> **`62 passed`**
+  - `python -m pytest -q` (Toàn bộ test suite cổng Host + Unit Tests cả 3 thành viên) -> **`91 passed`**
+  - `python -m lab8.benchmark --shapes workflow,single,orchestrator,swarm --cases data/public_claims.jsonl --seeds 11,22,33,44,55 --out reports/benchmark.json` -> **`280 trials completed`**
   - Tự kiểm hidden (`src/reports/hidden_selfcheck.json`, 40 claims × 5 seeds): `orchestrator` đạt **`200/200` trace hợp lệ**, `0` error, `0` leak suspect (`11,822.70 VND`), đồng thuận trạng thái 100% với `workflow` và `single`.
-  - `.venv/bin/python -m lab8.check_submission` -> **`0 FAIL`** (xác thực hợp lệ toàn bộ bài nộp trên nhánh `main`)
+  - `python -m lab8.check_submission` -> **`0 FAIL`** (xác thực hợp lệ toàn bộ bài nộp trên nhánh `main`)
 - **Run ID tiêu biểu:**
   - `R-orchestrator-C-001-s11`: Happy path giao trễ, hoàn tiền 35.000 VND.
   - `R-orchestrator-C-005-s11`: Ca T05 đơn thuộc chủ sở hữu khác -> chuyển cấp trên (`escalated`), tiền hoàn 0 VND, không rò rỉ PII vào trace.

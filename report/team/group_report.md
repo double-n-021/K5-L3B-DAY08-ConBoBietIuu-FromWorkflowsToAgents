@@ -1,7 +1,5 @@
 # Báo cáo nhóm — Lab 8 LogiX-VN
 
-Tối đa 5 trang ngoài phụ lục. Số liệu lấy từ file trong `src/reports/`, không chép tay từ terminal.
-
 ## 1. Thông tin nhóm
 
 - Tên nhóm: ConBoBietIuu

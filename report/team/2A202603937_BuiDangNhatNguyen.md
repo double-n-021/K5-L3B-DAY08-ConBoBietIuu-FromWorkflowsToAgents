@@ -4,24 +4,33 @@
 - **Nhóm:** ConBoBietIuu (Lớp L3B)
 - **Repository nhóm:** https://github.com/double-n-021/K5-L3B-DAY08-ConBoBietIuu-FromWorkflowsToAgents
 
+---
+
 ## 1. Thông tin thành viên
 
-- Họ tên: Bùi Đặng Nhật Nguyên (Nhóm trưởng)
-- MSSV: 2A202603937
-- Email: nhatnguyenmtvt@gmail.com
-- GitHub: double-n-021
+- **Họ tên:** Bùi Đặng Nhật Nguyên (Nhóm trưởng)
+- **MSSV:** 2A202603937
+- **Email:** nhatnguyenmtvt@gmail.com
+- **GitHub:** [double-n-021](https://github.com/double-n-021)
+
+---
 
 ## 2. Phần việc phụ trách
 
 - **Vai trò trong nhóm:** `workflow + integration`
-- **Code chính:** Triển khai Shape A (`workflow`) tại [src/lab8/shapes/workflow.py](../../src/lab8/shapes/workflow.py) xử lý toàn bộ kịch bản claim hoàn phí vận chuyển và bồi thường hỏng hàng của LogiX-VN (T01–T14).
-- **Kiểm thử (Testing):** Viết unit test riêng tại `src/tests/test_member1_workflow.py` để kiểm tra tính đúng đắn của quy trình cố định (`workflow`), đặc biệt là trường hợp khách khai khống số ngày trễ trong ticket (T02) và trần hoàn tiền theo đơn (T13, T14).
-- **Tích hợp & Hồ sơ nhóm:** Quản lý GitHub repository nhóm, tổng hợp [TEAM.md](../../TEAM.md), biên tập [report/team/group_report.md](group_report.md) (Mục 1, 2, phần Shape A trong Mục 3, Mục 5, 6), chốt commit hash và kiểm tra toàn bộ bài nộp bằng `python -m lab8.check_submission`.
+- **Code kiến trúc chính:** Triển khai Shape A (`workflow`) tại [src/lab8/shapes/workflow.py](../../src/lab8/shapes/workflow.py) xử lý toàn bộ kịch bản claim hoàn phí vận chuyển và bồi thường hỏng hàng của LogiX-VN (T01–T14).
+- **Kiểm thử (Testing):** Viết unit test riêng tại [src/tests/test_member1_workflow.py](../../src/tests/test_member1_workflow.py) (**8 bài test**) kiểm tra tính đúng đắn của quy trình cố định (`workflow`), đặc biệt là trường hợp khách khai khống số ngày trễ trong ticket (T02 trên 5 seed), trần hoàn tiền theo đơn (T13, T14), bảo mật trace (T05, T10) và phục hồi sau crash (T12).
+- **Tích hợp & Hồ sơ nhóm:** Quản lý GitHub repository nhóm, giải quyết xung đột khi hợp nhất nhánh của 3 thành viên, tổng hợp [TEAM.md](../../TEAM.md), biên tập [report/team/group_report.md](group_report.md) (Mục 1, 2, phần Shape A trong Mục 3, Mục 4.3, Mục 5, 6), chạy tự kiểm bộ hidden `student_drop/` sinh [src/reports/hidden_selfcheck.json](../../src/reports/hidden_selfcheck.json) và xác thực toàn bộ bài nộp bằng `python -m lab8.check_submission`.
+
+---
 
 ## 3. Đóng góp cụ thể
 
-- **Commit chính (hash):** `f73d097` (`feat(workflow): implement deterministic workflow shape and unit tests`), `11ad02b` (chốt `src/reports/benchmark.json` ở CP5)
-- **Test đã thêm hoặc sửa:** `src/tests/test_member1_workflow.py` (`8 passed`)
+- **Commit chính (hash):**
+  - `f73d097`: `feat(workflow): implement deterministic workflow shape and unit tests`
+  - `11ad02b`: `feat(cp5): generate 4-shape public benchmark report and resolve TEAM.md table`
+  - `0cd1f4c`: `docs(reports): add hidden_selfcheck.json results to team and personal reports`
+- **Test đã thêm hoặc sửa:** [src/tests/test_member1_workflow.py](../../src/tests/test_member1_workflow.py) (**8 unit tests**)
 - **Quyết định kỹ thuật đưa ra trong `workflow.py`:**
   1. Đọc thông tin claim qua `get_claim_view` và đơn hàng qua `lookup_order` (không dùng `SELECT *`) để ngăn rò rỉ `parent_secret` (`CANARY_SECRET_*`), header và PII (`phone`, `address`, `internal_note`, `item_name`) vào trace.
   2. Tính số tiền bồi thường hoàn toàn bằng code xác định (`compute_compensation`) dựa trên dữ liệu có cấu trúc của đơn hàng và policy hiện hành (`is_current = 1`, `effective_date <= 2026-11-15`), bỏ qua các con số hoặc lệnh điều khiển trong văn bản `ticket`.
