@@ -9,7 +9,7 @@
 - Pass rate / pass^5 / seed min-max / variance: pass_rate=1.000 (70/70) / pass^5=1.000 (14/14) / seed min-max=1.000-1.000 / variance=0.000000
 - Cost per success (mô phỏng, VND): 28.79 VND (total 2015.00 VND / 70 successes; single=30.03 VND, orchestrator=56.52 VND, swarm=49.57 VND)
 - Crash safety: 20/20 (src/reports/crash.json)
-- Secret leak / approval bypass: secret_leak=0 / pii_leak=0 / approval_bypass=0 (0/70 trials trên cả 3 shape workflow, single, orchestrator)
+- Secret leak / approval bypass: secret_leak=0 / pii_leak=0 / approval_bypass=0 (0/70 public trials trên cả 3 shape workflow, single, orchestrator)
 
 Ví dụ một dòng đã điền: `- Shape chọn: workflow`, `- Crash safety: 20/20 (src/reports/crash.json)`.
 
