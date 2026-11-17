@@ -5,7 +5,7 @@
 - Tên nhóm: ConBoBietIuu
 - Lớp: L3B
 - Repo nhóm: `K5-L3B-DAY08-ConBoBietIuu-FromWorkflowsToAgents` (xem [SUBMISSION.md](SUBMISSION.md))
-- URL repo, nhánh nộp, commit chốt: https://github.com/double-n-021/K5-L3B-DAY08-ConBoBietIuu-FromWorkflowsToAgents, `main`, (điền ở CP5)
+- URL repo, nhánh nộp, commit chốt: https://github.com/double-n-021/K5-L3B-DAY08-ConBoBietIuu-FromWorkflowsToAgents, `main`, `11ad02b`
 
 ## Thành viên
 
