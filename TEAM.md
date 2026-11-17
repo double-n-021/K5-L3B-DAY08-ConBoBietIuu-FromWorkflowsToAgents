@@ -26,7 +26,7 @@ Gợi ý chia vai:
 
 | Người | Vai | Commit | Test đã thêm hoặc sửa |
 | --- | --- | --- | --- |
-| Bùi Đặng Nhật Nguyên (`2A202603937`) | `workflow + integration` | (cập nhật ở CP5) | `src/tests/test_member1_workflow.py` |
+| Bùi Đặng Nhật Nguyên (`2A202603937`) | `workflow + integration` | `f73d097` | `src/tests/test_member1_workflow.py` |
 | Trần Gia Bảo (`2A202603914`) | `single + durability/crash` | (cập nhật ở CP5) | `src/tests/test_member2_single_and_crash.py` |
 | Trần Thị Hà Anh (`2A202603887`) | `orchestrator + handoff + benchmark/adr` | (cập nhật ở CP5) | `src/tests/test_member3_orchestrator_security.py` |
 
@@ -52,10 +52,13 @@ Sao chép mục dưới đây cho từng thành viên.
 
 ### Đóng góp cụ thể
 
-- (Cập nhật chi tiết sau khi hoàn thành CP2–CP5)
+- Triển khai hoàn chỉnh Shape A (`src/lab8/shapes/workflow.py`) xử lý quy trình hoàn phí cố định: đọc dữ liệu qua allowlist (`get_claim_view`, `lookup_order`), tính tiền bằng `compute_compensation`, truyền full quote và `crash_at` vào `durability.issue_refund`, đạt `62/62 passed` trên student matrix.
+- Viết bộ unit test `src/tests/test_member1_workflow.py` kiểm tra chống khai khống ngày trễ (T02 trên 5 seed), trần hoàn tiền theo đơn (T13, T14), bảo mật trace (T05, T10) và phục hồi sau crash (T12).
+- Thiết lập repository nhóm, bảng phân công `TEAM.md` và khung báo cáo nhóm.
 
 ### Bằng chứng
 
+- Commit chính: `f73d097` (`feat(workflow): implement deterministic workflow shape and unit tests`)
 - File code: `src/lab8/shapes/workflow.py`
 - File test: `src/tests/test_member1_workflow.py`
 - Báo cáo cá nhân: `report/team/2A202603937_BuiDangNhatNguyen.md`
