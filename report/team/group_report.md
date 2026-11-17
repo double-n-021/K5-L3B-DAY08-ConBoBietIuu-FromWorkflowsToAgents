@@ -6,7 +6,7 @@
 - Lớp: L3B
 - Repository nhóm: https://github.com/double-n-021/K5-L3B-DAY08-ConBoBietIuu-FromWorkflowsToAgents
 - Thành viên: xem [TEAM.md](../../TEAM.md) (Bùi Đặng Nhật Nguyên — `2A202603937`, Trần Gia Bảo — `2A202603914`, Trần Thị Hà Anh — `2A202603887`)
-- Commit chốt (trùng `report/team/decision_adr.md`): `0cd1f4c`
+- Commit chốt (trùng `report/team/decision_adr.md`): `2acf9dc`
 
 ## 2. Mục tiêu và cách tiếp cận
 

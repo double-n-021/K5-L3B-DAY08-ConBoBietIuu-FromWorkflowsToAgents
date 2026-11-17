@@ -30,6 +30,7 @@
   - `f73d097`: `feat(workflow): implement deterministic workflow shape and unit tests`
   - `11ad02b`: `feat(cp5): generate 4-shape public benchmark report and resolve TEAM.md table`
   - `0cd1f4c`: `docs(reports): add hidden_selfcheck.json results to team and personal reports`
+  - `2acf9dc`: `docs(reports): remove template instructions, unfilled MSSV_HoTen template, and scratch notes`
 - **Test đã thêm hoặc sửa:** [src/tests/test_member1_workflow.py](../../src/tests/test_member1_workflow.py) (**8 unit tests**)
 - **Quyết định kỹ thuật đưa ra trong `workflow.py`:**
   1. Đọc thông tin claim qua `get_claim_view` và đơn hàng qua `lookup_order` (không dùng `SELECT *`) để ngăn rò rỉ `parent_secret` (`CANARY_SECRET_*`), header và PII (`phone`, `address`, `internal_note`, `item_name`) vào trace.
